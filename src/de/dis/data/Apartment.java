@@ -135,7 +135,7 @@ public class Apartment {
 				pstmt.close();
 			} else {
 				// Falls schon eine ID vorhanden ist, mache ein Update...
-				String updateSQL = "UPDATE house SET floor = ?, rent = ?, rooms = ?, balcony = ?, estateid = ? WHERE id = ?";
+				String updateSQL = "UPDATE apartment SET floor = ?, rent = ?, rooms = ?, balcony = ? WHERE id = ?";
 				PreparedStatement pstmt = con.prepareStatement(updateSQL);
 
 				// Setze Anfrage Parameter
@@ -143,8 +143,7 @@ public class Apartment {
 				pstmt.setInt(2, getRent());
 				pstmt.setInt(3, getRooms());
 				pstmt.setBoolean(4, getBalcony());
-				pstmt.setInt(5, getEstateId());
-                pstmt.setInt(6, getId());
+                pstmt.setInt(5, getId());
 				pstmt.executeUpdate();
 
 				pstmt.close();

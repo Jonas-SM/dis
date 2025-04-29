@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+
 
 /**
  * Makler-Bean
@@ -104,10 +106,9 @@ public class EstateAgent {
 	 * worden, wird die generierte Id von der DB geholt und dem Model übergeben.
 	 */
 	public void save() {
-		// Hole Verbindung
-		Connection con = DbConnectionManager.getInstance().getConnection();
-
 		try {
+			Connection con = DbConnectionManager.getInstance().getConnection();
+			
 			// FC<ge neues Element hinzu, wenn das Objekt noch keine ID hat.
 			if (getId() == -1) {
 				// Achtung, hier wird noch ein Parameter mitgegeben,
@@ -203,4 +204,36 @@ public class EstateAgent {
 		}
 		return null;
 	}
+
+	public static ArrayList<EstateAgent> getAllEstateAgents() {
+        ArrayList<EstateAgent> result = new ArrayList<>(); 
+        
+        try {
+			Connection con = DbConnectionManager.getInstance().getConnection();
+
+            String getAllQuery = "SELECT * FROM EstateAgent";
+            PreparedStatement pstmt = con.prepareStatement(getAllQuery);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {            
+				EstateAgent e = new EstateAgent();
+				e.setId(rs.getInt("id"));
+				e.setName(rs.getString("name"));
+				e.setAddress(rs.getString("address"));
+				e.setLogin(rs.getString("login"));
+				e.setPassword(rs.getString("password"));
+				result.add(e);
+                
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+	public void display() {
+        System.out.println("EstateAgent{id=" + id + ", name='" + name + "', address=" + address + ", login='" + login + ", password=" + password + "}");
+    }
 }

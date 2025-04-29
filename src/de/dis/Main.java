@@ -1,6 +1,7 @@
 package de.dis;
 
 import de.dis.data.Apartment;
+import de.dis.data.Contract;
 import de.dis.data.Estate;
 import de.dis.data.EstateAgent;
 import de.dis.data.House;
@@ -118,6 +119,13 @@ public class Main {
 	}
 	
 	public static void removeMakler() {
+		ArrayList<EstateAgent> allAgents = new ArrayList<>();
+		allAgents = EstateAgent.getAllEstateAgents();
+
+		for (EstateAgent e : allAgents) {
+			e.display();
+		}
+
 		EstateAgent m = EstateAgent.load(Integer.parseInt(FormUtil.readString("Id")));
 		
 		m.delete();
@@ -372,10 +380,10 @@ public class Main {
 					h.setFloors(FormUtil.readInt("new Floor"));
 					break;
 				case CHANGE_PRICE:
-					h.setPrice(FormUtil.readInt("new Postalcode"));
+					h.setPrice(FormUtil.readInt("new Price"));
 					break;
 				case CHANGE_GARDEN:
-					h.setGarden(Boolean.parseBoolean(FormUtil.readString("new Street")));
+					h.setGarden(Boolean.parseBoolean(FormUtil.readString("new Garden")));
 					break;
 				case BACK:
 					return;
@@ -423,7 +431,7 @@ public class Main {
 					a.setRooms(FormUtil.readInt("new Rooms"));
 					break;
 				case CHANGE_BALCONY:
-					a.setBalcony(Boolean.parseBoolean(FormUtil.readString("new Balcony")));
+					a.setBalcony(Boolean.parseBoolean(FormUtil.readString("new Balcony (0/1)")));
 					break;
 				case BACK:
 					return;
@@ -521,30 +529,38 @@ public class Main {
 	}
 
 	public static void createTenancyContract() {
+		Contract c = new Contract();
+
+		c.setCreationDate(LocalDate.parse(FormUtil.readString("Creation Date")));
+		c.setPlace(FormUtil.readString("Place"));
+		c.save();
+
 		TenancyContract tc = new TenancyContract();
 		
 		tc.setStartDate(LocalDate.parse(FormUtil.readString("Start Date")));
 		tc.setDuration(FormUtil.readInt("Duration"));
 		tc.setAdditionalCosts(Float.parseFloat(FormUtil.readString("Additional Cost")));
-		tc.setContractNumber(FormUtil.readInt("Contract Number"));
+		tc.setContractNumber(c.getContractNumber());
 		tc.save();
 		
 		System.out.println("Mietvertrag mit der ID "+tc.getId()+" wurde erzeugt.");
 	}
 
 	public static void createPurchaseContract() {
+		Contract c = new Contract();
+
+		c.setCreationDate(LocalDate.parse(FormUtil.readString("Creation Date")));
+		c.setPlace(FormUtil.readString("Place"));
+		c.save();
+
 		PurchaseContract pc = new PurchaseContract();
 		
 		pc.setInstallmentsNumber(FormUtil.readInt("Installments Rate"));
 		pc.setInterestRate(Float.parseFloat(FormUtil.readString("Interest Rate")));
-		pc.setContractNumber(FormUtil.readInt("Contract Number"));
+		pc.setContractNumber(c.getContractNumber());
 		pc.save();
 		
 		System.out.println("Kaufvertrag mit der ID "+pc.getId()+" wurde erzeugt.");
-	}
-	
-	public static void signContract() {
-		
 	}
 
 }
