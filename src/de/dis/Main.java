@@ -21,6 +21,11 @@ public class Main {
 		showMainMenu();
 	}
 	
+	
+	/**
+	 * Menus
+	 */
+
 	/**
 	 * Zeigt das Hauptmenü
 	 */
@@ -94,10 +99,36 @@ public class Main {
 			System.out.println("Falsches Passwort!");
 			return;
 		}
-		
-		
 	}
 
+	/**
+	 * Legt einen neuen Makler an, nachdem der Benutzer
+	 * die entprechenden Daten eingegeben hat.
+	 */
+	public static void newMakler() {
+		EstateAgent m = new EstateAgent();
+		
+		m.setName(FormUtil.readString("Name"));
+		m.setAddress(FormUtil.readString("Adresse"));
+		m.setLogin(FormUtil.readString("Login"));
+		m.setPassword(FormUtil.readString("Passwort"));
+		m.save();
+		
+		System.out.println("Makler mit der ID "+m.getId()+" wurde erzeugt.");
+	}
+	
+	public static void removeMakler() {
+		EstateAgent m = EstateAgent.load(Integer.parseInt(FormUtil.readString("Id")));
+		
+		m.delete();
+		
+		System.out.println("Makler mit der ID "+m.getId()+" wurde gelöscht.");
+	}
+
+
+	/*
+	 * Anwesen Verwaltung
+	 */
 	public static void showEstateMenu() {
 		//Menüoptionen
 		final int CREATE_ESTATE = 0;
@@ -140,68 +171,6 @@ public class Main {
 			return;
 		}
 	}
-	
-	public static void showContractMenu() {
-		final int CONTRACT_OVERVIEW = 0;
-		final int CREATE_CONTRACT = 1;
-		final int SIGN_CONTRACT = 2;
-		final int ADD_PERSONS = 3;
-		final int BACK = 4;
-		
-		//Contract Menu
-		Menu contractMenu = new Menu("Vertrag-Verwaltung");
-		contractMenu.addEntry("Übersicht Verträge", CONTRACT_OVERVIEW);
-		contractMenu.addEntry("Vertrag erstellen", CREATE_CONTRACT);
-		contractMenu.addEntry("Vertrag unterschreiben", SIGN_CONTRACT);
-		contractMenu.addEntry("Personen hinzufügen", ADD_PERSONS);
-		contractMenu.addEntry("Zurück zum Hauptmenü", BACK);
-		
-		//Verarbeite Eingabe
-		while(true) {
-			int response = contractMenu.show();
-			
-			switch(response) {
-				case CONTRACT_OVERVIEW:
-				 	contractOverview();
-					break;
-				case CREATE_CONTRACT:
-					createContract();
-					break;
-				case SIGN_CONTRACT:
-					break;
-				case ADD_PERSONS:
-					addPerson();
-					break;
-				case BACK:
-					return;
-			}
-		}
-	}
-
-	/**
-	 * Legt einen neuen Makler an, nachdem der Benutzer
-	 * die entprechenden Daten eingegeben hat.
-	 */
-	public static void newMakler() {
-		EstateAgent m = new EstateAgent();
-		
-		m.setName(FormUtil.readString("Name"));
-		m.setAddress(FormUtil.readString("Adresse"));
-		m.setLogin(FormUtil.readString("Login"));
-		m.setPassword(FormUtil.readString("Passwort"));
-		m.save();
-		
-		System.out.println("Makler mit der ID "+m.getId()+" wurde erzeugt.");
-	}
-	
-	public static void removeMakler() {
-		EstateAgent m = EstateAgent.load(Integer.parseInt(FormUtil.readString("Id")));
-		
-		m.delete();
-		
-		System.out.println("Makler mit der ID "+m.getId()+" wurde gelöscht.");
-	}
-
 
 	public static void createEstate (int estateagentid) {
 		final int CREATE_HOUSE = 0;
@@ -231,6 +200,15 @@ public class Main {
 		}
 		
 	}
+
+	public static void deleteEstate () {
+		Estate e = Estate.load(FormUtil.readInt("Id"));
+		
+		e.delete();
+
+		System.out.println("Anwesen mit der ID "+e.getId()+" wurde gelöscht.");
+	}
+
 
 	public static void createHouse(int estateagentid) {
 		Estate e = new Estate();
@@ -277,14 +255,7 @@ public class Main {
 		System.out.println("Apartment mit der ID "+a.getId()+" wurde erzeugt.");
 	}
 
-	public static void deleteEstate () {
-		Estate e = Estate.load(FormUtil.readInt("Id"));
-		
-		e.delete();
-
-		System.out.println("Anwesen mit der ID "+e.getId()+" wurde gelöscht.");
-	}
-
+	
 	public static void updateEstate (int agentid) {
 		final int CHANGE_ESTATE = 0;
 		final int CHANGE_HOUSE = 1;
@@ -462,7 +433,40 @@ public class Main {
 			System.out.println("Apartment mit der ID" + a.getId() + " wurde geändert.");
 		}
 	}
-
+	
+	public static void showContractMenu() {
+		final int CONTRACT_OVERVIEW = 0;
+		final int CREATE_CONTRACT = 1;
+		final int ADD_PERSONS = 3;
+		final int BACK = 4;
+		
+		//Contract Menu
+		Menu contractMenu = new Menu("Vertrag-Verwaltung");
+		contractMenu.addEntry("Übersicht Verträge", CONTRACT_OVERVIEW);
+		contractMenu.addEntry("Vertrag erstellen", CREATE_CONTRACT);
+		contractMenu.addEntry("Personen hinzufügen", ADD_PERSONS);
+		contractMenu.addEntry("Zurück zum Hauptmenü", BACK);
+		
+		//Verarbeite Eingabe
+		while(true) {
+			int response = contractMenu.show();
+			
+			switch(response) {
+				case CONTRACT_OVERVIEW:
+				 	contractOverview();
+					break;
+				case CREATE_CONTRACT:
+					createContract();
+					break;
+				case ADD_PERSONS:
+					addPerson();
+					break;
+				case BACK:
+					return;
+			}
+		}
+	}
+	
 	public static void contractOverview() {
 		ArrayList<TenancyContract> allTenancyContracts = new ArrayList<>();
 		allTenancyContracts = TenancyContract.getAllContracts();
@@ -538,7 +542,7 @@ public class Main {
 		
 		System.out.println("Kaufvertrag mit der ID "+pc.getId()+" wurde erzeugt.");
 	}
-
+	
 	public static void signContract() {
 		
 	}
