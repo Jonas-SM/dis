@@ -38,7 +38,7 @@ a)
 after inserting the row on connection 2 via
 insert into sheet3 (name) values ('test'); 
 and executing the select again, you can see the new row from the perspective of Connection 1 
-->Non repeatable Read!
+->Non repeatable Read! (NO, but a Phantom read?!)
   For the first query you see a different result than for the second query
 
 b)
@@ -73,7 +73,43 @@ repeatable read
 3.3
 a) 
 S1 - 
+	T1 reads x,
+	T2 writes x,
+	T2 commits
+	T1 writes x 
+	T1 reads x
+	-> Lost Update
+	x has value which T1 writes (overwrites changes from T2)
+S2 -
+	T1 reads x
+	T2 writes x
+	T2 commits
+	T1 reads x 
+	-> Non repeatable read
+	x has value which T2 writes (but different results)
+S3 -
+	T2 reads x
+	T1 writes x
+	T1 writes y
+	T1 commits
+	T2 reads y
+	T2 writes x
+	T2 writes y
+	-> Lost update on x
+	x and y have value which T2 writes
 
+
+b) 
+S1 - yes the result differs, because the sequence is not serializable since lost updates are prevented. Thus T1 is rolled back and the the changes of T2 are made persistent
+This happens after T2 writes to x and then T1 tries to immediately write to x afterwards
+The one who commits first wins in this Scenario
+
+S2 - the results in the table do not differ, but what T1 reads differs from before. Now the reads of T1 have the same result (both Goofy). Thus it's no longer a non repeatable read
+
+S3 - result differs. Now we have a similar Situation as in S1, because T2 commits and then T1 runs into an error and is rolled back. So T2 wins and the changes are made persistent
+
+
+c) 
 
 
 
