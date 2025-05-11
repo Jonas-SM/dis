@@ -1,0 +1,92 @@
+3.1 
+a)
+ SHOW TRANSACTION ISOLATION LEVEL;  read committed
+ "In PostgreSQL, you can request any of the four standard transaction isolation levels, but internally only three distinct isolation levels are implemented, i.e., PostgreSQL's Read Uncommitted mode behaves like Read Committed. This is because it is the only sensible way to map the standard isolation levels to PostgreSQL's multiversion concurrency control architecture."
+- read committed
+- repeatable read
+- serializable
+b) 
+CREATE TABLE sheet3 (
+   id SERIAL PRIMARY KEY,   
+   name TEXT
+);
+
+INSERT INTO sheet3 (name, id) VALUES ('Peter pustekuchen');
+INSERT INTO sheet3 (name, id) VALUES ('manfred mandelhut');
+INSERT INTO sheet3 (name, id) VALUES ('Jürgen jungsprund');
+
+c) 
+When you disable auto-commit in DBeaver (or any SQL client), you are telling the database not to automatically commit each SQL statement. Instead, you're entering manual transaction mode, where you must explicitly manage the transaction's boundaries.
+
+You must explicitly click Commit or Rollback in DBeaver’s toolbar (or run COMMIT; or ROLLBACK; in SQL).
+
+-> AccessShareLock - least restrictive lock (when a session reads from a table) read lock. Others can still read this value (its shared)
+
+select * from sheet3 where name = 'Peter pustekuchen';
+SELECT relation::regclass, mode, granted
+FROM pg_locks
+WHERE relation::regclass = 'sheet3'::regclass
+
+d) 
+AccessShareLock - Triggered by SELECT, read-only queries
+SIReadLock - Triggered by Serializable Transactions
+
+
+
+3.2
+a)
+after inserting the row on connection 2 via
+insert into sheet3 (name) values ('test'); 
+and executing the select again, you can see the new row from the perspective of Connection 1 
+->Non repeatable Read!
+  For the first query you see a different result than for the second query
+
+b)
+With RR, the result remains the same after querying it before and after the insert. Thus we dont have a repeatable read anymore!
+Only after the commit, we can see the new row.
+
+What locks are held: AccessShareLock
+
+What does the table look like before and after commit: From a new Connection it Looks like the entry has been inserted Right after the commit. However from Connection 1 it Looks like it's not there.
+
+2PL: if 2PL were used, we would expect the row not to be inserted immediately since the second Transaction would have to wait for Transaction 1 to finish so that it can acquire the exclusive write lock
+
+c)
+cannot Change it?
+-> probably waits for the lock from Transaction 1 to be released
+
+After the commit, the changes from Transaction 1 is applied and then immediately from Transaction 2
+
+no this doesnt Change with any other Isolation Level, since Transaction Always has to wait for the write lock
+
+d)
+t1 tries to write to row1
+t2 tries to write to row2
+t1 tries to write to row2
+t2 tries to write to row1
+-> deadlock
+
+repeatable read
+
+
+
+3.3
+a) 
+S1 - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
