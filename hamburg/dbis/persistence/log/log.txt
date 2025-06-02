@@ -1,0 +1,14 @@
+2,2,5,Magica De Spell
+1,1,26,Granny De Spell
+3,2,13,Scrooge McDuck
+4,1,24,Clara Cluck
+5,1,27,Katie Mallard
+6,2,1,Granny Beagle
+7,1,29,Mickey Mouse
+8,2,5,Huey, Dewey, and Louie
+9,1,29,Jubal Pomp
+10,2,EOT
+11,1,25,Evronians
+12,1,27,Granny Beagle
+13,1,38,Granny Beagle
+14,1,EOT
