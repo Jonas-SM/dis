@@ -172,7 +172,8 @@ public class MovieService extends MovieServiceBase {
 	 */
 	public void saveMovieComment(String id, String comment) {
 		// TODO implement
-		Document query = new Document("_id", new ObjectId(id));
+		System.out.println("Saving comment for movie with id: " + id + " comment: " + comment);
+		Document query = new Document("_id", new Document("_id", id));
 		Document update = new Document("$set", new Document("comment", comment));
 		movies.updateOne(query, update);
 	}
