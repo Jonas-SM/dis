@@ -233,7 +233,7 @@ public class MovieService extends MovieServiceBase {
 		tweets.createIndex(new Document("text", "text").append("user.name", "text"));
 		
 		// TODO: implement
-		Document q = new Document("text", query);
+		Document q = new Document("$text", new Document("$search", query));
 		FindIterable<Document> result = tweets.find(q);
 		
 		return result;
@@ -279,7 +279,9 @@ public class MovieService extends MovieServiceBase {
 	 * @param contentType
 	 */
 	public void saveFile(String name, InputStream inputStream, String contentType) {
-		GridFSUploadOptions options = new GridFSUploadOptions().chunkSizeBytes(358400).metadata(new Document("contentType", contentType));
+		GridFSUploadOptions options = new GridFSUploadOptions()
+			.chunkSizeBytes(358400)
+			.metadata(new Document("contentType", contentType));
 		// TODO IMPLEMENT
 	    ObjectId fileId = fs.uploadFromStream(name, inputStream, options);
 	}
@@ -294,7 +296,7 @@ public class MovieService extends MovieServiceBase {
 	 */
 	public GridFSFile getFile(String name) {
 		// TODO: Implement
-		GridFSFile file = fs.find(eq(name)).first();
+		GridFSFile file = fs.find(eq("filename", name)).first();
 		if (file == null) {
 			file = fs.find(eq("filename", "sample.png")).first();
 		}
